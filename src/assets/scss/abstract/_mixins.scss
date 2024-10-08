@@ -18,7 +18,7 @@
 	}
 }
 
-@mixin typography($mobile-font-size, $mobile-line-height, $medium-font-size, $medium-line-height, $large-font-size, $large-line-height) {
+@mixin typography($mobile-font-size, $mobile-line-height, $medium-font-size, $medium-line-height, $large-font-size: $medium-font-size, $large-line-height: $medium-line-height) {
 	font-size: $mobile-font-size;
 	line-height: $mobile-line-height;
 

@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { generateRowEndNumber } from "@/utils"
+
 // randomised number to achieve uneven height in grid layout
-const randomNumber = Math.ceil(Math.random() * 3) + 3
+const gridRowEnd = generateRowEndNumber()
 </script>
 
 <template>
-  <div class="shimmer" :style="{ gridRowEnd: `span ${randomNumber}` }">
+  <div class="shimmer" :style="{ gridRowEnd: `span ${gridRowEnd}` }">
     <span class="shimmer__child"></span>
     <span class="shimmer__child"></span>
   </div>

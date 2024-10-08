@@ -4,6 +4,7 @@ import { ref } from "vue"
 import BaseInput from "@/components/BaseInput.vue"
 import GridDisplay from "@/components/GridDisplay.vue"
 import SkeletonLoader from "@/components/SkeletonLoader.vue"
+import ImageItem from "@/components/ImageItem.vue";
 
 const search = ref("")
 </script>
@@ -15,7 +16,8 @@ const search = ref("")
 
       <div class="homepage__content">
         <GridDisplay>
-          <SkeletonLoader v-for="count in 8" :key="count" />
+          <!-- <SkeletonLoader v-for="count in 8" :key="count" /> -->
+          <ImageItem v-for="count in 8" :key="count" />
         </GridDisplay>
       </div>
     </div>
