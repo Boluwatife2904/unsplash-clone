@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { computed, nextTick } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { useQuery } from "@tanstack/vue-query"
 import useFetch from "@/composables/useFetch"
 import type { UnSplashResponse } from "@/types"
 
-const search = ref("")
+const route = useRoute()
+const router = useRouter()
+
+const query = computed(() => route?.query?.query ?? "")
+const queryKey = computed(() => ["images", query.value])
 
 const { isFetching, data, isSuccess } = useQuery<UnSplashResponse>({
-  queryKey: ["images"],
-  queryFn: () => useFetch(`/search/photos?query=${search.value || "african"}`)
+  queryKey,
+  queryFn: () => useFetch(`/search/photos?query=${query.value || "african"}`)
 })
 
 import BaseInput from "@/components/BaseInput.vue"
@@ -29,12 +34,23 @@ const images = computed(() => {
   }
   return []
 })
+
+const searchForKeyword = async (event: KeyboardEvent) => {
+  const query = (event.target as HTMLInputElement).value
+  router.push({ query: { query } })
+  await nextTick()
+}
 </script>
 
 <template>
   <main class="homepage">
     <div class="homepage__container">
-      <BaseInput v-model="search" />
+      <h6 v-if="!!query" class="homepage__title">
+        {{ isFetching ? "Searching" : "Search Results" }}
+        for
+        <span class="homepage__title--highlighted">"{{ query }}"</span>
+      </h6>
+      <BaseInput v-else :model-value="String(query)" @keypress.enter="searchForKeyword" />
 
       <div class="homepage__content">
         <GridDisplay>
@@ -66,6 +82,15 @@ const images = computed(() => {
     width: 100%;
     max-width: 932px;
     margin: 0 auto;
+  }
+
+  &__title {
+    @include typography(1.8rem, 2.4rem, 2.4rem, 3.2rem, 3.2rem, 4.8rem);
+    color: #2b3954;
+
+    &--highlighted {
+      color: #7d8ea0;
+    }
   }
 }
 </style>
