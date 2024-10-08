@@ -28,11 +28,13 @@ const gridRowEnd = generateRowEndNumber()
   overflow: hidden;
   border-radius: 0.8rem;
   cursor: pointer;
+  max-height: auto;
 
   &__source {
     object-fit: cover;
     height: 100%;
     max-width: 100%;
+	width: 100%;
     will-change: transform;
     transition: all 0.3s linear;
 

@@ -15,4 +15,8 @@ html {
 body {
 	box-sizing: border-box;
 	background: linear-gradient(to bottom, $gray-background 300px, $white 0);
+
+	&.overflow-hidden {
+		overflow: hidden;
+	}
 }

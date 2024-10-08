@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { computed, nextTick } from "vue"
+import { ref, computed, nextTick } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useQuery } from "@tanstack/vue-query"
 import useFetch from "@/composables/useFetch"
 import type { UnSplashResponse } from "@/types"
 
+import BaseInput from "@/components/BaseInput.vue"
+import GridDisplay from "@/components/GridDisplay.vue"
+import SkeletonLoader from "@/components/SkeletonLoader.vue"
+import ImageItem from "@/components/ImageItem.vue"
+import ImageModal from "@/components/ImageModal.vue"
+
 const route = useRoute()
 const router = useRouter()
+
+const showImageModal = ref(false)
+const selectedImage = ref()
 
 const query = computed(() => route?.query?.query ?? "")
 const queryKey = computed(() => ["images", query.value])
@@ -15,11 +24,6 @@ const { isFetching, data, isSuccess } = useQuery<UnSplashResponse>({
   queryKey,
   queryFn: () => useFetch(`/search/photos?query=${query.value || "african"}`)
 })
-
-import BaseInput from "@/components/BaseInput.vue"
-import GridDisplay from "@/components/GridDisplay.vue"
-import SkeletonLoader from "@/components/SkeletonLoader.vue"
-import ImageItem from "@/components/ImageItem.vue"
 
 const images = computed(() => {
   if (isSuccess && data.value && data.value.results) {
@@ -40,6 +44,16 @@ const searchForKeyword = async (event: KeyboardEvent) => {
   router.push({ query: { query } })
   await nextTick()
 }
+
+const selectImage = (imageId: string) => {
+  if (imageId) {
+    const image = images.value.find((image) => image.id === imageId)
+    if (image) {
+      showImageModal.value = true
+      selectedImage.value = image
+    }
+  }
+}
 </script>
 
 <template>
@@ -58,10 +72,12 @@ const searchForKeyword = async (event: KeyboardEvent) => {
             <SkeletonLoader v-for="count in 8" :key="count" />
           </template>
           <template v-else-if="!isFetching && images.length">
-            <ImageItem v-for="image in images" :key="image.id" :image="image" />
+            <ImageItem v-for="image in images" :key="image.id" :image="image" @click="selectImage(image.id)" />
           </template>
         </GridDisplay>
       </div>
+
+      <ImageModal :show="showImageModal" :image="selectedImage" @close="showImageModal = false" />
     </div>
   </main>
 </template>
