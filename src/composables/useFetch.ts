@@ -34,7 +34,7 @@ export default async function useFetch(url: string, options: FetchOption = {}) {
       return await response.text()
     }
   } catch (error) {
-    if (error.name === "AbortError") {
+    if ((error as Error).name === "AbortError") {
       throw new Error(`Request timed out after ${timeout}ms`)
     }
     throw new Error(" Fetch error: ${error.message}")

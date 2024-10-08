@@ -1,24 +1,12 @@
 <script setup lang="ts">
-import { generateRowEndNumber } from '@/utils';
-
-interface Image {
-  imageUrl?: string
-  author?: string
-  location?: string
-}
+import { generateRowEndNumber } from "@/utils"
+import type { IImage } from "@/types"
 
 interface Props {
-  image?: Image
+  image: IImage
 }
 
-withDefaults(defineProps<Props>(), {
-  image: () => ({
-    author: "Samsung Memory",
-    imageUrl:
-      "https://images.unsplash.com/photo-1725393197946-56d3b0234ed2?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0MHx8fGVufDB8fHx8fA%3D%3D",
-    location: "Memory for every creator"
-  })
-})
+defineProps<Props>()
 
 // randomised number to achieve uneven height in grid layout
 const gridRowEnd = generateRowEndNumber()
