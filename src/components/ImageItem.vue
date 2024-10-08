@@ -73,7 +73,7 @@ const gridRowEnd = generateRowEndNumber()
   &__author {
     @include typography(1.6rem, 2rem, 1.8rem, 2.4rem);
     color: #e6e6e6;
-    font-weight: 400;
+    font-weight: 500;
   }
 
   &__location {

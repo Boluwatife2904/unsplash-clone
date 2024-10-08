@@ -1,12 +1,32 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed } from "vue"
+import { useQuery } from "@tanstack/vue-query"
+
+const search = ref("")
+
+const { isFetching, data } = useQuery({
+  queryKey: ["images"],
+  queryFn: () => useFetch(`/search/photos?query=${search.value || "african"}`)
+})
 
 import BaseInput from "@/components/BaseInput.vue"
 import GridDisplay from "@/components/GridDisplay.vue"
 import SkeletonLoader from "@/components/SkeletonLoader.vue"
-import ImageItem from "@/components/ImageItem.vue";
+import ImageItem from "@/components/ImageItem.vue"
+import useFetch from "@/composables/useFetch"
 
-const search = ref("")
+const images = computed(() => {
+  if (data.value.results) {
+    return data.value.results.map((result) => {
+      return {
+        imageUrl: result.urls.full,
+        author: result?.user?.name ?? "",
+        location: result?.user?.location ?? "🌍"
+      }
+    })
+  }
+  return []
+})
 </script>
 
 <template>
@@ -16,8 +36,12 @@ const search = ref("")
 
       <div class="homepage__content">
         <GridDisplay>
-          <!-- <SkeletonLoader v-for="count in 8" :key="count" /> -->
-          <ImageItem v-for="count in 8" :key="count" />
+          <template v-if="isFetching">
+            <SkeletonLoader v-for="count in 8" :key="count" />
+          </template>
+          <template v-else-if="!isFetching && data.results.length">
+            <ImageItem v-for="image in images" :key="image.id" :image="image" />
+          </template>
         </GridDisplay>
       </div>
     </div>
